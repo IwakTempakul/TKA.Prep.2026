@@ -380,7 +380,7 @@
       <label for="input-name">Nama Lengkap</label>
       <input type="text" id="input-name" placeholder="Tulis nama lengkapmu">
       <label for="input-class">Kelas</label>
-      <input type="text" id="input-class" placeholder="XII TM 1">
+      <input type="text" id="input-class" placeholder="XII GP 1">
       <div class="error-msg" id="start-error">Nama dan kelas wajib diisi.</div>
       <button class="btn" onclick="startExam()">MULAI UJIAN</button>
     </div>
@@ -441,50 +441,50 @@
 
 <script>
 /* ================= KONTEN BACAAN & STIMULUS (dipakai ulang per jenis) ================= */
-const passageWorkshop = "The automotive workshop at a vocational high school is a spacious room filled with various tools and equipment. Large tool cabinets line the walls, holding wrenches, screwdrivers, and other important instruments. In the middle of the room, several car lifts allow students to inspect vehicles from underneath. Safety posters are pinned near the entrance, reminding everyone to wear proper gloves and goggles. The floor is always kept clean and free of oil stains to prevent accidents. Every student is expected to return tools to their proper place after use.";
+const passageWorkshop = "The geology laboratory at a vocational high school is a bright room equipped with various tools for rock and mineral analysis. Long wooden shelves hold labeled rock and core samples collected from different mining sites. In the corner, a set of microscopes allows students to examine mineral structures closely. A large geological map of East Kalimantan is mounted on the wall, showing various coal deposit locations. The laboratory is kept clean and free of dust to protect the delicate samples from damage. Every student is required to wear gloves when handling the rock samples.";
 
-const passageVisit = "Last semester, my classmates and I visited a car manufacturing plant as part of our vocational training program. We arrived early in the morning and were welcomed by the plant supervisor. He explained the entire car assembly process, from welding the body to installing the engine. We were amazed by the robotic arms that worked with incredible precision. In the afternoon, we had the chance to try using a torque wrench under staff supervision. Before we left, each of us received a certificate of participation. It was truly a valuable experience for our future career.";
+const passageVisit = "Last semester, my classmates and I visited a coal mining site in Kutai Kartanegara as part of our vocational training program. We arrived early in the morning and were welcomed by the site geologist. She explained the entire coal exploration process, from soil sampling to core drilling. We were amazed by the massive excavators that worked with incredible power. In the afternoon, we had the chance to try using a Brunton compass under staff supervision. Before we left, each of us received a certificate of participation. It was truly a valuable experience for our future career.";
 
 const passageLegend = "Once, a young fisherman named Toba caught an unusual golden fish. Surprisingly, the fish turned into a beautiful woman after he brought it home. They fell in love and got married, but she made him promise never to reveal her origin as a fish. Years later, when their son misbehaved, Toba angrily called him the son of a fish, breaking his promise. Suddenly, heavy rain fell and the ground cracked open, forming a massive lake. The woman and her son disappeared into the water, and the lake became known as Lake Toba.";
 
-const passageMultimeter = "Follow these steps to measure voltage safely using a digital multimeter. First, turn the dial to the correct voltage setting before connecting anything. Second, insert the black probe into the COM port and the red probe into the VOmA port. Third, touch the probes to the two points you want to measure, making sure your hands do not touch the metal tips. Fourth, read the number shown on the screen and record it. Finally, turn off the multimeter and store the probes properly after use.";
+const passageMultimeter = "Follow these steps to measure the strike and dip of a rock layer using a geological compass. First, place the edge of the compass flat against the rock surface before taking any reading. Second, level the compass using the built-in bubble level to ensure accuracy. Third, read the strike direction from the compass needle, making sure the compass is held steady and away from magnetic objects. Fourth, tilt the clinometer arm to measure the dip angle and record the number shown. Finally, close the compass and store it safely in its protective case after use.";
 
-const passageDigital = "In today's digital era, vocational students must master more than just technical skills; digital literacy has become equally important. First, most modern workshops now use computer-based systems to monitor machines, so students who understand basic software will adapt faster. Second, employers increasingly expect fresh graduates to communicate through digital platforms such as email and cloud-based reports. Furthermore, digital literacy helps students find updated technical references instead of relying on outdated manuals. For these reasons, vocational schools should strengthen digital literacy programs alongside practical training.";
+const passageDigital = "In today's digital era, vocational students must master more than just technical skills; digital literacy has become equally important. First, most modern mining operations now use computer-based systems to monitor drilling and excavation equipment, so students who understand basic software will adapt faster. Second, employers increasingly expect fresh graduates to communicate through digital platforms such as email and cloud-based reports. Furthermore, digital literacy helps students find updated technical references instead of relying on outdated manuals. For these reasons, vocational schools should strengthen digital literacy programs alongside practical training.";
 
-const jobAd = "VACANCY: JUNIOR TECHNICIAN\nPT Kalimantan Motor Industri is looking for:\n- SMK graduate (Automotive/Mechanical Engineering)\n- Able to read technical manuals in English\n- Willing to work in shifts\nSend your application letter and certificate to recruitment@kmi.co.id before October 15th, 2026.";
+const jobAd = "VACANCY: JUNIOR MINE SURVEYOR\nPT Kalimantan Bara Sejahtera is looking for:\n- SMK graduate (Geology/Mining Engineering)\n- Able to read technical manuals in English\n- Willing to work in shifts\nSend your application letter and certificate to recruitment@kbs.co.id before October 15th, 2026.";
 
 const infographicA = '<svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">' +
-'<text x="160" y="14" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">Survey: Interest in Vocational Skill Programs (130 students)</text>' +
+'<text x="160" y="14" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">Survey: Interest in Mining Specialization Programs (130 students)</text>' +
 '<rect x="30" y="54" width="40" height="126" fill="#3b82f6"></rect>' +
 '<text x="50" y="49" text-anchor="middle" font-size="10" fill="#1e293b">42</text>' +
-'<text x="50" y="203" text-anchor="middle" font-size="8" fill="#1e293b">Automotive</text>' +
+'<text x="50" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Geo. Surveying</text>' +
 '<rect x="90" y="90" width="40" height="90" fill="#3b82f6"></rect>' +
 '<text x="110" y="85" text-anchor="middle" font-size="10" fill="#1e293b">30</text>' +
-'<text x="110" y="203" text-anchor="middle" font-size="8" fill="#1e293b">Welding</text>' +
+'<text x="110" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Mine Drilling</text>' +
 '<rect x="150" y="102" width="40" height="78" fill="#3b82f6"></rect>' +
 '<text x="170" y="97" text-anchor="middle" font-size="10" fill="#1e293b">26</text>' +
-'<text x="170" y="203" text-anchor="middle" font-size="8" fill="#1e293b">Networking</text>' +
+'<text x="170" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Heavy Equip.</text>' +
 '<rect x="210" y="126" width="40" height="54" fill="#3b82f6"></rect>' +
 '<text x="230" y="121" text-anchor="middle" font-size="10" fill="#1e293b">18</text>' +
-'<text x="230" y="203" text-anchor="middle" font-size="8" fill="#1e293b">Culinary</text>' +
+'<text x="230" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Min. Processing</text>' +
 '<rect x="270" y="138" width="40" height="42" fill="#3b82f6"></rect>' +
 '<text x="290" y="133" text-anchor="middle" font-size="10" fill="#1e293b">14</text>' +
-'<text x="290" y="203" text-anchor="middle" font-size="8" fill="#1e293b">Design</text>' +
+'<text x="290" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Mine Safety</text>' +
 '<line x1="20" y1="180" x2="310" y2="180" stroke="#94a3b8" stroke-width="1"></line>' +
 '</svg>';
 
-const infographicB = '<p style="margin:0 0 8px;font-weight:600;">Table: Average Practical Training Hours per Week by Skill Program (Survey of 100 Grade XII Vocational Students, 2026)</p>' +
+const infographicB = '<p style="margin:0 0 8px;font-weight:600;">Table: Average Practical Training Hours per Week by Mining Specialization (Survey of 100 Grade XII Vocational Students, 2026)</p>' +
 '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:260px;">' +
 '<tr style="background:#dbeafe;"><th style="padding:6px;border:1px solid #cbd5e1;text-align:left;">Program</th><th style="padding:6px;border:1px solid #cbd5e1;">Avg. Hours/Week</th></tr>' +
-'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Automotive</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">8 hours</td></tr>' +
-'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Welding</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">6 hours</td></tr>' +
-'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Networking</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">5 hours</td></tr>' +
-'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Culinary</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">7 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Geological Surveying</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">8 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Mine Drilling</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">6 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Heavy Equipment</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">5 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Mineral Processing</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">7 hours</td></tr>' +
 '</table></div>';
 
 const posterK3 = '<svg viewBox="0 0 300 235" xmlns="http://www.w3.org/2000/svg">' +
-'<text x="150" y="14" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e293b">WORKSHOP SAFETY POSTER (K3)</text>' +
-'<text x="150" y="27" text-anchor="middle" font-size="8" fill="#64748b">Follow these rules before entering the workshop</text>' +
+'<text x="150" y="14" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">MINE SITE SAFETY POSTER (K3 TAMBANG)</text>' +
+'<text x="150" y="27" text-anchor="middle" font-size="8" fill="#64748b">Follow these rules before entering the mining area</text>' +
 '<path d="M30,90 A20,20 0 0 1 70,90 Z" fill="#f59e0b" stroke="#b45309" stroke-width="2"></path>' +
 '<rect x="26" y="88" width="48" height="7" rx="3" fill="#b45309"></rect>' +
 '<text x="50" y="112" text-anchor="middle" font-size="9" fill="#1e293b">Wear a Helmet</text>' +
@@ -499,7 +499,7 @@ const posterK3 = '<svg viewBox="0 0 300 235" xmlns="http://www.w3.org/2000/svg">
 '<rect x="78" y="166" width="24" height="7" fill="#78716c"></rect>' +
 '<rect x="98" y="166" width="6" height="7" fill="#f97316"></rect>' +
 '<line x1="72" y1="152" x2="108" y2="188" stroke="#dc2626" stroke-width="5"></line>' +
-'<text x="90" y="212" text-anchor="middle" font-size="9" fill="#1e293b">No Smoking Area</text>' +
+'<text x="90" y="212" text-anchor="middle" font-size="9" fill="#1e293b">No Open Flame Zone</text>' +
 '<rect x="188" y="148" width="44" height="44" rx="5" fill="#dc2626"></rect>' +
 '<rect x="205" y="156" width="10" height="28" fill="#fff"></rect>' +
 '<rect x="196" y="164" width="28" height="10" fill="#fff"></rect>' +
@@ -521,49 +521,49 @@ const questions = [
 // ===== JENIS 1: DESCRIPTIVE (1-3) =====
 { type:'single', tag:'TEKS', passage: passageWorkshop,
   question: "What is the text mainly about?",
-  options: ["A description of a school's automotive workshop and its facilities.","The daily schedule of workshop classes.","The history of automotive technology.","The list of tools sold at a hardware store.","An advertisement promoting new workshop equipment."], answer: 0 },
+  options: ["A description of a school's geology laboratory and its facilities.","The daily schedule of laboratory classes.","The history of mining technology.","The list of equipment sold at a supply store.","An advertisement promoting new laboratory tools."], answer: 0 },
 { type:'complex_multi', tag:'TEKS', passage: passageWorkshop,
   question: "Based on the text, choose ALL statements that are TRUE.",
   statements: [
-    "Car lifts are placed in the middle of the room.",
-    "The workshop always has oil stains on the floor.",
-    "The tool cabinets are located along the walls.",
-    "The workshop is a small and cramped room.",
-    "Students are allowed to leave tools anywhere after use."
+    "Rock and core samples are displayed on long shelves.",
+    "The laboratory is always covered in dust.",
+    "A geological map of East Kalimantan is mounted on the wall.",
+    "The laboratory is a dark and disorganized room.",
+    "Students may handle rock samples without wearing gloves."
   ], correctSet: [0,2] },
 { type:'complex_matrix', tag:'TEKS', passage: passageWorkshop,
   question: "Based on the text, decide whether each statement is True or False.",
   columns: ["True","False"],
   rows: [
-    "The workshop keeps its floor clean to prevent accidents.",
-    "Students may skip wearing gloves during practical work.",
-    "Wrenches and screwdrivers are stored in the tool cabinets.",
-    "Tools are stored inside the car lifts.",
-    "The workshop is a small and cramped room."
+    "The laboratory keeps its samples clean and undamaged.",
+    "Students may skip wearing gloves during sample handling.",
+    "Rock and core samples are stored on labeled shelves.",
+    "Microscopes are located inside the storage shelves.",
+    "The laboratory has no windows and is very dark."
   ], correct: [0,1,0,1,1] },
 
 // ===== JENIS 2: RECOUNT (4-6) =====
 { type:'single', tag:'TEKS', passage: passageVisit,
   question: "What did the students do in the afternoon during the visit?",
-  options: ["They watched a safety training video.","They had lunch with the factory workers.","They tried using a torque wrench under supervision.","They toured the marketing department.","They repaired a broken robotic arm."], answer: 2 },
+  options: ["They watched a safety training video.","They had lunch with the site workers.","They tried using a Brunton compass under supervision.","They toured the administration office.","They operated one of the excavators."], answer: 2 },
 { type:'complex_multi', tag:'TEKS', passage: passageVisit,
   question: "Based on the text, choose ALL statements that are TRUE.",
   statements: [
-    "The visit took place at a car manufacturing plant.",
-    "The plant supervisor explained the car assembly process.",
-    "The students operated the robotic arms themselves.",
+    "The visit took place at a coal mining site.",
+    "The site geologist explained the coal exploration process.",
+    "The students operated the excavators themselves.",
     "Each student received a certificate of participation.",
-    "The students arrived at the plant in the evening."
+    "The students arrived at the site in the evening."
   ], correctSet: [0,1,3] },
 { type:'complex_matrix', tag:'TEKS', passage: passageVisit,
   question: "Classify each activity into the correct time of day.",
   columns: ["Morning Activity","Afternoon Activity"],
   rows: [
-    "Trying a torque wrench under staff supervision.",
-    "Being welcomed by the plant supervisor.",
-    "Listening to the explanation of the car assembly process.",
+    "Trying a Brunton compass under staff supervision.",
+    "Being welcomed by the site geologist.",
+    "Listening to the explanation of the coal exploration process.",
     "Receiving a certificate of participation before leaving.",
-    "Arriving early at the manufacturing plant."
+    "Arriving early at the mining site."
   ], correct: [1,0,0,1,0] },
 
 // ===== JENIS 3: NARRATIVE (7-9) =====
@@ -592,26 +592,26 @@ const questions = [
 
 // ===== JENIS 4: PROCEDURE (10-12) =====
 { type:'single', tag:'TEKS', passage: passageMultimeter,
-  question: "According to the text, what should be done first before connecting the probes?",
-  options: ["Insert the red probe into the COM port.","Turn the dial to the correct voltage setting.","Read the number on the screen.","Turn off the multimeter.","Record the measurement result."], answer: 1 },
+  question: "According to the text, what should be done first before taking a reading?",
+  options: ["Read the strike direction from the needle.","Place the compass flat against the rock surface.","Tilt the clinometer arm to measure the dip.","Store the compass in its case.","Record the dip angle in a notebook."], answer: 1 },
 { type:'complex_multi', tag:'TEKS', passage: passageMultimeter,
   question: "Based on the text, choose ALL statements that are TRUE.",
   statements: [
-    "It is safe to touch the metal tips of the probes while measuring.",
-    "The voltage setting should be selected before connecting the probes.",
-    "The multimeter should be turned off after use.",
-    "The red probe should be inserted into the COM port.",
-    "The reading on the screen should be recorded."
+    "The compass should be held near magnetic objects for accuracy.",
+    "The compass should be leveled using the bubble level.",
+    "The compass should be stored in its protective case after use.",
+    "The dip angle is measured before placing the compass on the rock.",
+    "The strike direction is read from the compass needle."
   ], correctSet: [1,2,4] },
 { type:'complex_matrix', tag:'TEKS', passage: passageMultimeter,
   question: "Classify each statement into the correct step category of the procedure.",
   columns: ["Preparation Step","Measurement Step"],
   rows: [
-    "Reading the number shown on the screen.",
-    "Touching the probes to the two points being measured.",
-    "Turning the dial to the correct voltage setting.",
-    "Recording the result after taking the reading.",
-    "Inserting the probes into the correct ports."
+    "Reading the strike direction from the compass needle.",
+    "Tilting the clinometer arm to measure the dip angle.",
+    "Placing the compass flat against the rock surface.",
+    "Recording the dip angle after measuring it.",
+    "Leveling the compass using the bubble level."
   ], correct: [1,1,0,1,0] },
 
 // ===== JENIS 5: ANALYTICAL EXPOSITION (13-15) =====
@@ -623,7 +623,7 @@ const questions = [
   statements: [
     "According to the text, vocational schools should reduce practical training in favor of digital classes.",
     "The text claims most vocational students already have strong digital skills before graduating.",
-    "Modern workshops increasingly rely on computer-based systems.",
+    "Modern mining operations increasingly rely on computer-based systems.",
     "Employers no longer require any form of written communication from graduates.",
     "Digital literacy can help students access up-to-date technical references."
   ], correctSet: [2,4] },
@@ -631,7 +631,7 @@ const questions = [
   question: "Decide whether each statement is True or False according to the writer's argument.",
   columns: ["True","False"],
   rows: [
-    "Understanding basic software helps students adapt to modern workshops.",
+    "Understanding basic software helps students adapt to modern mining operations.",
     "Vocational schools should completely stop practical training.",
     "Outdated manuals are always more reliable than digital references.",
     "Employers value graduates who can use digital platforms.",
@@ -640,8 +640,8 @@ const questions = [
 
 // ===== JENIS 6: TEKS FUNGSIONAL/VOKASIONAL (16-18) =====
 { type:'single', tag:'TEKS', passage: jobAd,
-  question: "What qualification is required for the Junior Technician position?",
-  options: ["An SMK graduate in Automotive/Mechanical Engineering.","A university degree in Business.","At least five years of work experience.","Fluency in three foreign languages.","A valid driving license only."], answer: 0 },
+  question: "What qualification is required for the Junior Mine Surveyor position?",
+  options: ["An SMK graduate in Geology/Mining Engineering.","A university degree in Business.","At least five years of work experience.","Fluency in three foreign languages.","A valid driving license only."], answer: 0 },
 { type:'complex_multi', tag:'TEKS', passage: jobAd,
   question: "Based on the advertisement, choose ALL statements that are TRUE.",
   statements: [
@@ -656,7 +656,7 @@ const questions = [
   columns: ["True","False"],
   rows: [
     "Fresh graduates with no relevant background are welcome to apply regardless of major.",
-    "The position advertised is for a Junior Technician.",
+    "The position advertised is for a Junior Mine Surveyor.",
     "The company is located outside Indonesia.",
     "Applicants must have at least five years of experience.",
     "Applicants are expected to work in shifts."
@@ -664,51 +664,51 @@ const questions = [
 
 // ===== JENIS 7: INFOGRAFIS (19-21) - poster, grafik, tabel =====
 { type:'single', tag:'POSTER (K3)', passageHtml:true, passage: posterK3,
-  question: "According to the poster, where should someone go if an accident happens in the workshop?",
-  options: ["The tool cabinet.","The manager's office.","The first aid station.","The parking area.","The smoking area."], answer: 2 },
+  question: "According to the poster, where should someone go if an accident happens in the mining area?",
+  options: ["The tool storage room.","The site manager's office.","The first aid station.","The parking area.","The fuel storage area."], answer: 2 },
 { type:'complex_multi', tag:'INFOGRAFIS', passageHtml:true, passage: infographicA,
   question: "Based on the chart, choose ALL statements that are TRUE.",
   statements: [
-    "Welding has fewer enthusiasts than Networking.",
-    "The number of students interested in Automotive is more than double those interested in Design.",
-    "Culinary is the least popular program among the five.",
-    "The combined number of students interested in Networking and Culinary equals the number interested in Automotive.",
-    "Automotive is the most popular program among the students surveyed."
+    "Mine Drilling has fewer enthusiasts than Heavy Equipment.",
+    "The number of students interested in Geological Surveying is more than double those interested in Mine Safety.",
+    "Mineral Processing is the least popular program among the five.",
+    "The combined number of students interested in Heavy Equipment and Mineral Processing equals the number interested in Geological Surveying.",
+    "Geological Surveying is the most popular program among the students surveyed."
   ], correctSet: [1,4] },
 { type:'complex_matrix', tag:'INFOGRAFIS', passageHtml:true, passage: infographicB,
   question: "Based on the table, decide whether each statement is TRUE or FALSE.",
   columns: ["True","False"],
   rows: [
-    "Automotive has more practical hours than Culinary.",
-    "Welding has more practical hours than Culinary.",
-    "Networking has the fewest practical hours among the four programs.",
-    "The difference between Automotive and Welding is 2 hours.",
-    "The total practical hours of Networking and Welding equals the practical hours of Automotive."
+    "Geological Surveying has more practical hours than Mineral Processing.",
+    "Mine Drilling has more practical hours than Mineral Processing.",
+    "Heavy Equipment has the fewest practical hours among the four programs.",
+    "The difference between Geological Surveying and Mine Drilling is 2 hours.",
+    "The total practical hours of Heavy Equipment and Mine Drilling equals the practical hours of Geological Surveying."
   ], correct: [0,1,0,0,1] },
 
 // ===== ERROR RECOGNITION (22-24) =====
 { type:'single', tag:'PERHATIKAN KALIMAT', passageHtml:true,
-  passage: "Every morning, <u>(A) the mechanic checks the tools</u> <u>(B) and then</u> <u>(C) he inspects the vehicle</u> <u>(D) before he give the report</u> <u>(E) to his supervisor</u>.",
+  passage: "Every morning, <u>(A) the surveyor checks the equipment</u> <u>(B) and then</u> <u>(C) he inspects the drilling site</u> <u>(D) before he give the report</u> <u>(E) to his supervisor</u>.",
   question: "Which underlined part contains a grammatical error?",
-  options: ["(A) the mechanic checks the tools","(B) and then","(C) he inspects the vehicle","(D) before he give the report","(E) to his supervisor"], answer: 3 },
+  options: ["(A) the surveyor checks the equipment","(B) and then","(C) he inspects the drilling site","(D) before he give the report","(E) to his supervisor"], answer: 3 },
 { type:'single', tag:'PERHATIKAN KALIMAT', passageHtml:true,
-  passage: "<u>(A) Yesterday afternoon,</u> <u>(B) the workers was wearing safety helmets</u> <u>(C) while operating</u> <u>(D) the heavy machinery</u> <u>(E) inside the factory</u>.",
+  passage: "<u>(A) Yesterday afternoon,</u> <u>(B) the workers was wearing safety helmets</u> <u>(C) while operating</u> <u>(D) the heavy machinery</u> <u>(E) at the mine site</u>.",
   question: "Which underlined part contains a grammatical error?",
-  options: ["(A) Yesterday afternoon,","(B) the workers was wearing safety helmets","(C) while operating","(D) the heavy machinery","(E) inside the factory"], answer: 1 },
+  options: ["(A) Yesterday afternoon,","(B) the workers was wearing safety helmets","(C) while operating","(D) the heavy machinery","(E) at the mine site"], answer: 1 },
 { type:'single', tag:'PERHATIKAN KALIMAT', passageHtml:true,
-  passage: "<u>(A) She has finished</u> <u>(B) her internship report,</u> <u>(C) and now she is preparing</u> <u>(D) a presentation</u> <u>(E) to presented tomorrow</u>.",
+  passage: "<u>(A) She has finished</u> <u>(B) her fieldwork report,</u> <u>(C) and now she is preparing</u> <u>(D) a presentation</u> <u>(E) to presented tomorrow</u>.",
   question: "Which underlined part contains a grammatical error?",
-  options: ["(A) She has finished","(B) her internship report,","(C) and now she is preparing","(D) a presentation","(E) to presented tomorrow"], answer: 4 },
+  options: ["(A) She has finished","(B) her fieldwork report,","(C) and now she is preparing","(D) a presentation","(E) to presented tomorrow"], answer: 4 },
 
 // ===== GRAMMAR (25-27) =====
 { type:'single', tag:'TEKS',
-  question: "The machine ___ by a technician every month.",
+  question: "The drilling equipment ___ by a technician every month.",
   options: ["services","is serviced","serviced","has service","servicing"], answer: 1 },
 { type:'single', tag:'TEKS',
-  question: "If the power ___ suddenly, please turn off all machines immediately.",
+  question: "If the generator ___ suddenly, please switch to the backup power system immediately.",
   options: ["went out","go out","has gone out","goes out","will go out"], answer: 3 },
 { type:'single', tag:'TEKS',
-  question: "The supervisor said that the new machine ___ the day before.",
+  question: "The site supervisor said that the new excavator ___ the day before.",
   options: ["had arrived","arrives","will arrive","arrived","arriving"], answer: 0 },
 
 // ===== VOCABULARY (28-30) =====
@@ -716,7 +716,7 @@ const questions = [
   question: "The word \"precise\" has the closest meaning to...",
   options: ["Careless","Slow","Accurate","Expensive","Heavy"], answer: 2 },
 { type:'single', tag:'PERHATIKAN KATA', passageHtml:true,
-  passage: "The packaging must be handled carefully because the glass items inside are extremely <u>fragile</u>.",
+  passage: "The rock core samples must be handled carefully because they are extremely <u>fragile</u>.",
   question: "The word closest in meaning to the underlined word is...",
   options: ["Sturdy","Heavy","Cheap","Colorful","Breakable"], answer: 4 },
 { type:'single', tag:'TEKS',
