@@ -37,66 +37,6 @@
   }
   .screen{display:none;flex-direction:column;flex:1;padding:16px;}
   .screen.active{display:flex;}
-  .screen.gate-screen{padding:0;}
-  .gate-screen.crossfade-out{
-    position:absolute;
-    inset:0;
-    z-index:20;
-    transition:opacity 3s ease;
-  }
-  .gate-screen.crossfade-out.fade-out{ opacity:0; }
-  #start-screen.crossfade-in{
-    position:absolute;
-    inset:0;
-    z-index:19;
-    opacity:0;
-    overflow-y:auto;
-    transition:opacity 3s ease;
-  }
-  #start-screen.crossfade-in.fade-in{ opacity:1; }
-
-  /* GATE SCREEN */
-  .gate-container{
-    position:relative;
-    width:100%;
-    height:100vh;
-    overflow:hidden;
-    background:#0f172a;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-  }
-  .gate-image{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-  }
-  .gate-letters{
-    position:relative;
-    z-index:3;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:2vw;
-    pointer-events:none;
-  }
-  .gate-letter{
-    font-weight:900;
-    color:#fff;
-    line-height:1;
-    opacity:0;
-    transform:scale(.4) rotate(-18deg);
-    text-shadow:0 0 18px rgba(0,0,0,.85), 0 0 36px rgba(245,158,11,.7);
-    transition:opacity .35s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
-  }
-  .gate-letter.shown{
-    opacity:1;
-    transform:scale(1) rotate(0deg);
-  }
 
   /* HEADER */
   .header{
@@ -418,20 +358,8 @@
 <body>
 <div class="app">
 
-  <!-- ==================== GATE SCREEN ==================== -->
-  <div id="gate-screen" class="screen active gate-screen">
-    <div class="gate-container" id="gate-tap-area">
-      <img src="1.jpg" alt="" class="gate-image" id="gate-image">
-      <div class="gate-letters" id="gate-letters">
-        <span class="gate-letter" id="letter-T">T</span>
-        <span class="gate-letter" id="letter-K">K</span>
-        <span class="gate-letter" id="letter-A">A</span>
-      </div>
-    </div>
-  </div>
-
   <!-- ==================== START SCREEN ==================== -->
-  <div id="start-screen" class="screen">
+  <div id="start-screen" class="screen active">
     <div class="header">
       <h1>SIMULASI TKA<br>BAHASA INGGRIS KELAS XII</h1>
       <p>SMK Negeri 6 Samarinda</p>
@@ -504,6 +432,7 @@
         <div class="ribbon-code" id="ribbon-code"></div>
       </div>
       <div class="code-box">
+        <p style="margin:0 0 6px;font-size:0.8rem;font-weight:700;color:var(--muted);">NILAI</p>
         <div class="code" id="result-code">-</div>
       </div>
       <button class="btn" onclick="location.reload()">Ulangi Simulasi</button>
@@ -513,72 +442,6 @@
 </div>
 
 <script>
-/* ================= GATE: KUNCI KETUKAN RAHASIA ================= */
-let gateStage = 0;       // 0=menunggu 1 ketuk(T), 1=menunggu 2 ketuk(K), 2=menunggu 3 ketuk(A), 3=selesai
-let gateTapCount = 0;
-let gateTimer = null;
-let gateComplete = false;
-const gateLetterIds = ['letter-T','letter-K','letter-A'];
-
-function sizeGateLetters(){
-  const container = document.getElementById('gate-tap-area');
-  if(!container) return;
-  const w = container.offsetWidth;
-  const size = Math.floor(w * 0.28);
-  document.querySelectorAll('.gate-letter').forEach(el=>{ el.style.fontSize = size + 'px'; });
-}
-window.addEventListener('load', sizeGateLetters);
-window.addEventListener('resize', sizeGateLetters);
-sizeGateLetters();
-
-function handleGateTap(){
-  if(gateComplete) return;
-  gateTapCount++;
-  if(!gateTimer){
-    gateTimer = setTimeout(evaluateGateTaps, 1000);
-  }
-}
-
-function evaluateGateTaps(){
-  const needed = gateStage + 1;
-  if(gateTapCount === needed){
-    document.getElementById(gateLetterIds[gateStage]).classList.add('shown');
-    gateStage++;
-    if(gateStage === 3){
-      gateComplete = true;
-      setTimeout(triggerGateTransition, 3000);
-    }
-  } else {
-    gateLetterIds.forEach(id=> document.getElementById(id).classList.remove('shown'));
-    gateStage = 0;
-  }
-  gateTapCount = 0;
-  gateTimer = null;
-}
-
-function triggerGateTransition(){
-  const gate = document.getElementById('gate-screen');
-  const start = document.getElementById('start-screen');
-
-  start.classList.add('active');
-  start.classList.add('crossfade-in');
-  gate.classList.add('crossfade-out');
-
-  void gate.offsetHeight; // paksa reflow agar state awal terkunci sebelum transisi mulai
-
-  requestAnimationFrame(()=>{
-    gate.classList.add('fade-out');
-    start.classList.add('fade-in');
-  });
-
-  setTimeout(()=>{
-    gate.classList.remove('active','crossfade-out','fade-out');
-    start.classList.remove('crossfade-in','fade-in');
-  }, 3000);
-}
-
-document.getElementById('gate-tap-area').addEventListener('click', handleGateTap);
-
 /* ================= KONTEN BACAAN & STIMULUS (dipakai ulang per jenis) ================= */
 const passageWorkshop = "The geology laboratory at a vocational high school is a bright room equipped with various tools for rock and mineral analysis. Long wooden shelves hold labeled rock and core samples collected from different mining sites. In the corner, a set of microscopes allows students to examine mineral structures closely. A large geological map of East Kalimantan is mounted on the wall, showing various coal deposit locations. The laboratory is kept clean and free of dust to protect the delicate samples from damage. Every student is required to wear gloves when handling the rock samples.";
 
@@ -1109,17 +972,16 @@ function finishExam(){
   let correct = 0;
   questions.forEach((q,idx)=>{ if(isCorrect(idx)) correct++; });
   const score = Math.round((correct/questions.length)*100);
-  const code = encodeScore(score);
 
   document.getElementById('result-name').textContent = studentName;
   document.getElementById('result-class').textContent = studentClass;
-  document.getElementById('result-code').textContent = code;
+  document.getElementById('result-code').textContent = score;
 
   const ribbon = document.getElementById('result-ribbon');
   const ribbonCode = document.getElementById('ribbon-code');
   if(violationCount > 0){
     ribbon.className = 'result-ribbon flagged';
-    ribbonCode.textContent = encodeScore(violationCount);
+    ribbonCode.textContent = violationCount;
   } else {
     ribbon.className = 'result-ribbon clean';
     ribbonCode.textContent = '';
@@ -1130,10 +992,6 @@ function finishExam(){
   scrollTop();
 }
 
-function encodeScore(score){
-  const map = {'0':'J','1':'A','2':'B','3':'C','4':'D','5':'E','6':'F','7':'G','8':'H','9':'I'};
-  return String(score).split('').map(d=>map[d]).join('');
-}
 </script>
 </body>
 </html>
