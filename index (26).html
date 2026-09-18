@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="id" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="google" content="notranslate">
+<title>Simulasi TKA Bahasa Inggris - SMK Negeri 6 Samarinda</title>
+<style>
+  :root{
+    --primary:#1e3a8a;
+    --primary-light:#3b82f6;
+    --accent:#f59e0b;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --green:#16a34a;
+    --red:#dc2626;
+    --border:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--bg);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .screen{display:none;flex-direction:column;flex:1;padding:16px;}
+  .screen.active{display:flex;}
+
+  /* HEADER */
+  .header{
+    background:linear-gradient(135deg,var(--primary),var(--primary-light));
+    color:#fff;
+    padding:20px 16px;
+    border-radius:0 0 18px 18px;
+    text-align:center;
+  }
+  .header h1{margin:0 0 4px;font-size:1.1rem;line-height:1.4;}
+  .header p{margin:0;font-size:0.85rem;opacity:0.95;font-weight:600;}
+  .header .byline{margin-top:6px;font-size:0.72rem;opacity:0.85;font-weight:400;}
+
+  /* START SCREEN */
+  .card{
+    background:var(--card);
+    border-radius:14px;
+    padding:18px;
+    margin-top:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  }
+  .card h2{font-size:1rem;margin-top:0;color:var(--primary);}
+  .info-list{font-size:0.85rem;color:var(--muted);line-height:1.7;padding-left:18px;margin:0 0 10px;}
+  label{display:block;font-size:0.85rem;font-weight:600;margin:14px 0 6px;color:var(--text);}
+  input[type=text]{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    font-size:1rem;
+    outline:none;
+  }
+  input[type=text]:focus{border-color:var(--primary-light);}
+  .btn{
+    display:block;
+    width:100%;
+    padding:14px;
+    margin-top:18px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:#fff;
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .2s;
+  }
+  .btn:active{background:var(--primary-light);}
+  .btn.secondary{background:var(--muted);}
+  .btn.outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary);}
+  .error-msg{color:var(--red);font-size:0.8rem;margin-top:8px;display:none;}
+
+  /* QUIZ SCREEN */
+  .quiz-topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--card);
+    padding:10px 14px;
+    border-radius:12px;
+    margin-bottom:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+    position:sticky;
+    top:8px;
+    z-index:5;
+  }
+  .qnum{font-weight:700;font-size:0.9rem;color:var(--primary);}
+  .timer{
+    font-weight:700;
+    font-size:0.95rem;
+    background:#eff6ff;
+    color:var(--primary);
+    padding:6px 12px;
+    border-radius:20px;
+  }
+  .timer.warning{background:#fef2f2;color:var(--red);}
+
+  .violation-badge{
+    display:none;
+    align-items:center;
+    gap:3px;
+    font-size:0.72rem;
+    font-weight:700;
+    color:#fff;
+    background:var(--red);
+    padding:4px 8px;
+    border-radius:20px;
+    margin-left:6px;
+  }
+  .violation-banner{
+    display:none;
+    background:#fef2f2;
+    border:1.5px solid var(--red);
+    color:#991b1b;
+    font-size:0.78rem;
+    font-weight:600;
+    text-align:center;
+    padding:9px 10px;
+    border-radius:10px;
+    margin-bottom:10px;
+    line-height:1.4;
+  }
+
+  .passage-box, .question-text, .option, .matrix-table{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+  }
+
+  .progress-bar{
+    width:100%;
+    height:6px;
+    background:var(--border);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:12px;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    transition:width .3s;
+  }
+
+  .passage-box{
+    background:#eef2ff;
+    border-left:4px solid var(--primary-light);
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:0.85rem;
+    line-height:1.6;
+    margin-bottom:12px;
+    color:#1e293b;
+    overflow-x:auto;
+  }
+  .passage-box .tag{
+    display:inline-block;
+    font-size:0.68rem;
+    font-weight:700;
+    color:var(--primary);
+    background:#dbeafe;
+    padding:2px 8px;
+    border-radius:10px;
+    margin-bottom:6px;
+  }
+  .passage-box svg{max-width:100%;height:auto;display:block;margin:4px auto;}
+  .passage-box u{text-decoration:underline;text-decoration-thickness:2px;font-weight:600;}
+
+  .question-box{
+    background:var(--card);
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    flex:1;
+  }
+  .question-text{font-size:0.98rem;font-weight:600;line-height:1.5;margin-bottom:6px;}
+  .instruction-note{
+    font-size:0.78rem;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:12px;
+  }
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    padding:12px;
+    margin-bottom:10px;
+    cursor:pointer;
+    font-size:0.9rem;
+    line-height:1.4;
+    transition:all .15s;
+  }
+  .option.selected{
+    border-color:var(--primary);
+    background:#eff6ff;
+  }
+  .option .letter{
+    flex-shrink:0;
+    width:26px;height:26px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:0.8rem;
+    color:var(--muted);
+  }
+  .option .letter.square{border-radius:6px;}
+  .option.selected .letter{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:#fff;
+  }
+
+  /* MATRIX TABLE */
+  .matrix-wrap{overflow-x:auto;margin-top:4px;}
+  table.matrix-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.78rem;
+    min-width:320px;
+  }
+  table.matrix-table th{
+    background:#eff6ff;
+    color:var(--primary);
+    padding:8px 4px;
+    border:1px solid var(--border);
+    font-size:0.7rem;
+  }
+  table.matrix-table td{
+    padding:8px 4px;
+    border:1px solid var(--border);
+    text-align:center;
+  }
+  table.matrix-table td.stmt{
+    text-align:left;
+    font-weight:500;
+  }
+  .matrix-cell{
+    width:22px;height:22px;
+    border-radius:5px;
+    border:1.5px solid var(--border);
+    display:inline-flex;
+    align-items:center;justify-content:center;
+    cursor:pointer;
+    background:#fff;
+  }
+  .matrix-cell.selected{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:#fff;
+    font-weight:700;
+  }
+
+  .nav-btns{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+  }
+  .nav-btns .btn{margin-top:0;flex:1;}
+
+  .navigator{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:6px;
+    margin:14px 0;
+  }
+  .nav-cell{
+    aspect-ratio:1;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:8px;
+    border:1.5px solid var(--border);
+    font-size:0.78rem;
+    font-weight:700;
+    background:#fff;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .nav-cell.answered{background:#dcfce7;border-color:var(--green);color:var(--green);}
+  .nav-cell.current{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+  details.nav-toggle{margin-bottom:6px;}
+  details.nav-toggle summary{
+    font-size:0.82rem;font-weight:700;color:var(--primary);
+    cursor:pointer;padding:8px 0;
+  }
+
+  /* RESULT SCREEN */
+  .result-card{
+    background:var(--card);
+    border-radius:16px;
+    padding:30px 20px;
+    text-align:center;
+    margin-top:20px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+  }
+  .result-card h2{color:var(--primary);margin:0 0 2px;font-size:1.2rem;}
+  .result-class{color:var(--muted);font-size:0.88rem;margin:0 0 14px;}
+  .result-ribbon{
+    display:inline-block;
+    position:relative;
+    width:36px;
+    height:56px;
+    margin-bottom:18px;
+  }
+  .result-ribbon .ribbon-body{
+    position:absolute;
+    inset:0;
+    clip-path: polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%);
+  }
+  .result-ribbon.clean .ribbon-body{ background:var(--green); }
+  .result-ribbon.flagged .ribbon-body{ background:var(--red); }
+  .result-ribbon .ribbon-code{
+    position:absolute;
+    top:9px;
+    left:0;
+    right:0;
+    text-align:center;
+    color:#fff;
+    font-weight:800;
+    font-size:0.8rem;
+    letter-spacing:1px;
+  }
+  .code-box{
+    background:#f8fafc;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    padding:26px 14px;
+  }
+  .code-box .code{
+    font-size:2.4rem;
+    font-weight:800;
+    letter-spacing:8px;
+    color:var(--primary);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ==================== START SCREEN ==================== -->
+  <div id="start-screen" class="screen active">
+    <div class="header">
+      <h1>SIMULASI TKA<br>BAHASA INGGRIS KELAS XII</h1>
+      <p>SMK Negeri 6 Samarinda</p>
+      <p class="byline">Disusun oleh: Guritno Aditya Warman, S.Pd.</p>
+    </div>
+    <div class="card">
+      <h2>Petunjuk Pengerjaan</h2>
+      <ul class="info-list">
+        <li>Jumlah soal: <b>30 butir</b></li>
+        <li>Waktu pengerjaan: <b>75 menit</b></li>
+        <li>Simulasi ini mengacu pada Kerangka Asesmen TKA Bahasa Inggris Kemendikdasmen (Permendikdasmen No. 9 Tahun 2025 &amp; Perka BSKAP No. 045/H/AN/2025)</li>
+        <li>Setiap soal pilihan ganda memiliki <b>5 opsi jawaban (A-E)</b></li>
+        <li>Setiap jenis teks (descriptive, recount, narrative, procedure, analytical exposition, teks fungsional/vokasional, dan infografis) dilengkapi variasi <b>Pilihan Ganda</b>, <b>Pilihan Ganda Kompleks</b>, dan <b>Pilihan Ganda Kompleks Kategori/Matriks</b></li>
+        <li>Soal infografis mencakup grafik, tabel, dan poster (gambar + tulisan)</li>
+        <li>Materi juga mencakup grammar (termasuk <i>error recognition</i>) dan vocabulary</li>
+        <li>Baca petunjuk pada tiap soal dengan teliti karena format jawaban berbeda-beda</li>
+        <li>Waktu berjalan otomatis dan ujian berakhir otomatis saat waktu habis</li>
+      </ul>
+      <label for="input-name">Nama Lengkap</label>
+      <input type="text" id="input-name" placeholder="Tulis nama lengkapmu">
+      <label for="input-class">Kelas</label>
+      <input type="text" id="input-class" placeholder="XII GP 2">
+      <div class="error-msg" id="start-error">Nama dan kelas wajib diisi.</div>
+      <button class="btn" onclick="startExam()">MULAI UJIAN</button>
+    </div>
+  </div>
+
+  <!-- ==================== QUIZ SCREEN ==================== -->
+  <div id="quiz-screen" class="screen">
+    <div class="quiz-topbar">
+      <span class="qnum" id="q-progress">Soal 1/30</span>
+      <span style="display:flex;align-items:center;">
+        <span class="timer" id="timer-display">75:00</span>
+        <span class="violation-badge" id="violation-badge">⚠ <span id="violation-count">0</span></span>
+      </span>
+    </div>
+    <div class="violation-banner" id="violation-banner"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <details class="nav-toggle">
+      <summary>Navigasi Soal (ketuk untuk buka/tutup)</summary>
+      <div class="navigator" id="navigator"></div>
+    </details>
+
+    <div class="question-box">
+      <div id="passage-container"></div>
+      <div class="question-text" id="question-text"></div>
+      <div class="instruction-note" id="instruction-note" style="display:none;"></div>
+      <div id="options-container"></div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn secondary" id="prev-btn" onclick="prevQuestion()">◀ Sebelumnya</button>
+      <button class="btn" id="next-btn" onclick="nextQuestion()">Selanjutnya ▶</button>
+    </div>
+    <button class="btn outline" id="submit-btn" onclick="confirmSubmit()" style="display:none;">SELESAI &amp; KUMPULKAN</button>
+  </div>
+
+  <!-- ==================== RESULT SCREEN ==================== -->
+  <div id="result-screen" class="screen">
+    <div class="header">
+      <h1>HASIL SIMULASI TKA</h1>
+      <p>SMK Negeri 6 Samarinda</p>
+    </div>
+    <div class="result-card">
+      <h2 id="result-name">-</h2>
+      <p class="result-class">Kelas <b id="result-class">-</b></p>
+      <div class="result-ribbon" id="result-ribbon">
+        <div class="ribbon-body"></div>
+        <div class="ribbon-code" id="ribbon-code"></div>
+      </div>
+      <div class="code-box">
+        <p style="margin:0 0 6px;font-size:0.8rem;font-weight:700;color:var(--muted);">NILAI</p>
+        <div class="code" id="result-code">-</div>
+      </div>
+      <button class="btn" onclick="location.reload()">Ulangi Simulasi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ================= KONTEN BACAAN & STIMULUS (dipakai ulang per jenis) ================= */
+const passageWorkshop = "The geology laboratory at a vocational high school is a bright room equipped with various tools for rock and mineral analysis. Long wooden shelves hold labeled rock and core samples collected from different mining sites. In the corner, a set of microscopes allows students to examine mineral structures closely. A large geological map of East Kalimantan is mounted on the wall, showing various coal deposit locations. The laboratory is kept clean and free of dust to protect the delicate samples from damage. Every student is required to wear gloves when handling the rock samples.";
+
+const passageVisit = "Last semester, my classmates and I visited a coal mining site in Kutai Kartanegara as part of our vocational training program. We arrived early in the morning and were welcomed by the site geologist. She explained the entire coal exploration process, from soil sampling to core drilling. We were amazed by the massive excavators that worked with incredible power. In the afternoon, we had the chance to try using a Brunton compass under staff supervision. Before we left, each of us received a certificate of participation. It was truly a valuable experience for our future career.";
+
+const passageLegend = "Once, a young fisherman named Toba caught an unusual golden fish. Surprisingly, the fish turned into a beautiful woman after he brought it home. They fell in love and got married, but she made him promise never to reveal her origin as a fish. Years later, when their son misbehaved, Toba angrily called him the son of a fish, breaking his promise. Suddenly, heavy rain fell and the ground cracked open, forming a massive lake. The woman and her son disappeared into the water, and the lake became known as Lake Toba.";
+
+const passageMultimeter = "Follow these steps to measure the strike and dip of a rock layer using a geological compass. First, place the edge of the compass flat against the rock surface before taking any reading. Second, level the compass using the built-in bubble level to ensure accuracy. Third, read the strike direction from the compass needle, making sure the compass is held steady and away from magnetic objects. Fourth, tilt the clinometer arm to measure the dip angle and record the number shown. Finally, close the compass and store it safely in its protective case after use.";
+
+const passageDigital = "In today's digital era, vocational students must master more than just technical skills; digital literacy has become equally important. First, most modern mining operations now use computer-based systems to monitor drilling and excavation equipment, so students who understand basic software will adapt faster. Second, employers increasingly expect fresh graduates to communicate through digital platforms such as email and cloud-based reports. Furthermore, digital literacy helps students find updated technical references instead of relying on outdated manuals. For these reasons, vocational schools should strengthen digital literacy programs alongside practical training.";
+
+const jobAd = "VACANCY: JUNIOR MINE SURVEYOR\nPT Kalimantan Bara Sejahtera is looking for:\n- SMK graduate (Geology/Mining Engineering)\n- Able to read technical manuals in English\n- Willing to work in shifts\nSend your application letter and certificate to recruitment@kbs.co.id before October 15th, 2026.";
+
+const infographicA = '<svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">' +
+'<text x="160" y="14" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">Survey: Interest in Mining Specialization Programs (130 students)</text>' +
+'<rect x="30" y="54" width="40" height="126" fill="#3b82f6"></rect>' +
+'<text x="50" y="49" text-anchor="middle" font-size="10" fill="#1e293b">42</text>' +
+'<text x="50" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Geo. Surveying</text>' +
+'<rect x="90" y="90" width="40" height="90" fill="#3b82f6"></rect>' +
+'<text x="110" y="85" text-anchor="middle" font-size="10" fill="#1e293b">30</text>' +
+'<text x="110" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Mine Drilling</text>' +
+'<rect x="150" y="102" width="40" height="78" fill="#3b82f6"></rect>' +
+'<text x="170" y="97" text-anchor="middle" font-size="10" fill="#1e293b">26</text>' +
+'<text x="170" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Heavy Equip.</text>' +
+'<rect x="210" y="126" width="40" height="54" fill="#3b82f6"></rect>' +
+'<text x="230" y="121" text-anchor="middle" font-size="10" fill="#1e293b">18</text>' +
+'<text x="230" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Min. Processing</text>' +
+'<rect x="270" y="138" width="40" height="42" fill="#3b82f6"></rect>' +
+'<text x="290" y="133" text-anchor="middle" font-size="10" fill="#1e293b">14</text>' +
+'<text x="290" y="203" text-anchor="middle" font-size="7.5" fill="#1e293b">Mine Safety</text>' +
+'<line x1="20" y1="180" x2="310" y2="180" stroke="#94a3b8" stroke-width="1"></line>' +
+'</svg>';
+
+const infographicB = '<p style="margin:0 0 8px;font-weight:600;">Table: Average Practical Training Hours per Week by Mining Specialization (Survey of 100 Grade XII Vocational Students, 2026)</p>' +
+'<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:260px;">' +
+'<tr style="background:#dbeafe;"><th style="padding:6px;border:1px solid #cbd5e1;text-align:left;">Program</th><th style="padding:6px;border:1px solid #cbd5e1;">Avg. Hours/Week</th></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Geological Surveying</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">8 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Mine Drilling</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">6 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Heavy Equipment</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">5 hours</td></tr>' +
+'<tr><td style="padding:6px;border:1px solid #cbd5e1;">Mineral Processing</td><td style="padding:6px;border:1px solid #cbd5e1;text-align:center;">7 hours</td></tr>' +
+'</table></div>';
+
+const posterK3 = '<svg viewBox="0 0 300 235" xmlns="http://www.w3.org/2000/svg">' +
+'<text x="150" y="14" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">MINE SITE SAFETY POSTER (K3 TAMBANG)</text>' +
+'<text x="150" y="27" text-anchor="middle" font-size="8" fill="#64748b">Follow these rules before entering the mining area</text>' +
+'<path d="M30,90 A20,20 0 0 1 70,90 Z" fill="#f59e0b" stroke="#b45309" stroke-width="2"></path>' +
+'<rect x="26" y="88" width="48" height="7" rx="3" fill="#b45309"></rect>' +
+'<text x="50" y="112" text-anchor="middle" font-size="9" fill="#1e293b">Wear a Helmet</text>' +
+'<rect x="130" y="55" width="40" height="45" rx="14" fill="#3b82f6" stroke="#1e3a8a" stroke-width="2"></rect>' +
+'<rect x="117" y="72" width="18" height="20" rx="8" fill="#3b82f6" stroke="#1e3a8a" stroke-width="2"></rect>' +
+'<text x="150" y="112" text-anchor="middle" font-size="9" fill="#1e293b">Wear Gloves</text>' +
+'<circle cx="235" cy="78" r="15" fill="none" stroke="#1e293b" stroke-width="4"></circle>' +
+'<circle cx="265" cy="78" r="15" fill="none" stroke="#1e293b" stroke-width="4"></circle>' +
+'<rect x="247" y="75" width="6" height="6" fill="#1e293b"></rect>' +
+'<text x="250" y="112" text-anchor="middle" font-size="9" fill="#1e293b">Wear Safety Glasses</text>' +
+'<circle cx="90" cy="170" r="24" fill="none" stroke="#dc2626" stroke-width="5"></circle>' +
+'<rect x="78" y="166" width="24" height="7" fill="#78716c"></rect>' +
+'<rect x="98" y="166" width="6" height="7" fill="#f97316"></rect>' +
+'<line x1="72" y1="152" x2="108" y2="188" stroke="#dc2626" stroke-width="5"></line>' +
+'<text x="90" y="212" text-anchor="middle" font-size="9" fill="#1e293b">No Open Flame Zone</text>' +
+'<rect x="188" y="148" width="44" height="44" rx="5" fill="#dc2626"></rect>' +
+'<rect x="205" y="156" width="10" height="28" fill="#fff"></rect>' +
+'<rect x="196" y="164" width="28" height="10" fill="#fff"></rect>' +
+'<text x="210" y="212" text-anchor="middle" font-size="9" fill="#1e293b">First Aid Station</text>' +
+'<rect x="0" y="220" width="30" height="12" fill="#1e293b"></rect>' +
+'<rect x="30" y="220" width="30" height="12" fill="#f59e0b"></rect>' +
+'<rect x="60" y="220" width="30" height="12" fill="#1e293b"></rect>' +
+'<rect x="90" y="220" width="30" height="12" fill="#f59e0b"></rect>' +
+'<rect x="120" y="220" width="30" height="12" fill="#1e293b"></rect>' +
+'<rect x="150" y="220" width="30" height="12" fill="#f59e0b"></rect>' +
+'<rect x="180" y="220" width="30" height="12" fill="#1e293b"></rect>' +
+'<rect x="210" y="220" width="30" height="12" fill="#f59e0b"></rect>' +
+'<rect x="240" y="220" width="30" height="12" fill="#1e293b"></rect>' +
+'<rect x="270" y="220" width="30" height="12" fill="#f59e0b"></rect>' +
+'</svg>';
+
+/* ================= DATA SOAL (30 butir) ================= */
+const questions = [
+// ===== JENIS 1: DESCRIPTIVE (1-3) =====
+{ type:'single', tag:'TEKS', passage: passageWorkshop,
+  question: "What is the text mainly about?",
+  options: ["A description of a school's geology laboratory and its facilities.","The daily schedule of laboratory classes.","The history of mining technology.","The list of equipment sold at a supply store.","An advertisement promoting new laboratory tools."], answer: 0 },
+{ type:'complex_multi', tag:'TEKS', passage: passageWorkshop,
+  question: "Based on the text, choose ALL statements that are TRUE.",
+  statements: [
+    "Rock and core samples are displayed on long shelves.",
+    "The laboratory is always covered in dust.",
+    "A geological map of East Kalimantan is mounted on the wall.",
+    "The laboratory is a dark and disorganized room.",
+    "Students may handle rock samples without wearing gloves."
+  ], correctSet: [0,2] },
+{ type:'complex_matrix', tag:'TEKS', passage: passageWorkshop,
+  question: "Based on the text, decide whether each statement is True or False.",
+  columns: ["True","False"],
+  rows: [
+    "The laboratory keeps its samples clean and undamaged.",
+    "Students may skip wearing gloves during sample handling.",
+    "Rock and core samples are stored on labeled shelves.",
+    "Microscopes are located inside the storage shelves.",
+    "The laboratory has no windows and is very dark."
+  ], correct: [0,1,0,1,1] },
+
+// ===== JENIS 2: RECOUNT (4-6) =====
+{ type:'single', tag:'TEKS', passage: passageVisit,
+  question: "What did the students do in the afternoon during the visit?",
+  options: ["They watched a safety training video.","They had lunch with the site workers.","They tried using a Brunton compass under supervision.","They toured the administration office.","They operated one of the excavators."], answer: 2 },
+{ type:'complex_multi', tag:'TEKS', passage: passageVisit,
+  question: "Based on the text, choose ALL statements that are TRUE.",
+  statements: [
+    "The visit took place at a coal mining site.",
+    "The site geologist explained the coal exploration process.",
+    "The students operated the excavators themselves.",
+    "Each student received a certificate of participation.",
+    "The students arrived at the site in the evening."
+  ], correctSet: [0,1,3] },
+{ type:'complex_matrix', tag:'TEKS', passage: passageVisit,
+  question: "Classify each activity into the correct time of day.",
+  columns: ["Morning Activity","Afternoon Activity"],
+  rows: [
+    "Trying a Brunton compass under staff supervision.",
+    "Being welcomed by the site geologist.",
+    "Listening to the explanation of the coal exploration process.",
+    "Receiving a certificate of participation before leaving.",
+    "Arriving early at the mining site."
+  ], correct: [1,0,0,1,0] },
+
+// ===== JENIS 3: NARRATIVE (7-9) =====
+{ type:'single', tag:'TEKS', passage: passageLegend,
+  question: "What caused the disaster at the end of the story?",
+  options: ["A sudden earthquake struck the village.","The fisherman lost his fishing boat.","The son ran away from home.","The king declared war on the village.","Toba broke his promise not to reveal his wife's origin."], answer: 4 },
+{ type:'complex_multi', tag:'TEKS', passage: passageLegend,
+  question: "Based on the story, choose ALL statements that are TRUE.",
+  statements: [
+    "The golden fish transformed into a beautiful woman.",
+    "Toba's wife turned back into a fish at the end of the story.",
+    "Toba refused to marry the woman who used to be a fish.",
+    "The lake was formed after the ground cracked open.",
+    "Toba's son was well-behaved throughout the story."
+  ], correctSet: [0,3] },
+{ type:'complex_matrix', tag:'TEKS', passage: passageLegend,
+  question: "Classify each event into the correct part of the story's timeline.",
+  columns: ["Before the Promise was Broken","After the Promise was Broken"],
+  rows: [
+    "Toba caught a golden fish while fishing.",
+    "Toba made a promise never to reveal his wife's origin.",
+    "The ground cracked open and formed a massive lake.",
+    "The fish transformed into a beautiful woman.",
+    "The woman and her son disappeared into the water."
+  ], correct: [0,0,1,0,1] },
+
+// ===== JENIS 4: PROCEDURE (10-12) =====
+{ type:'single', tag:'TEKS', passage: passageMultimeter,
+  question: "According to the text, what should be done first before taking a reading?",
+  options: ["Read the strike direction from the needle.","Place the compass flat against the rock surface.","Tilt the clinometer arm to measure the dip.","Store the compass in its case.","Record the dip angle in a notebook."], answer: 1 },
+{ type:'complex_multi', tag:'TEKS', passage: passageMultimeter,
+  question: "Based on the text, choose ALL statements that are TRUE.",
+  statements: [
+    "The compass should be held near magnetic objects for accuracy.",
+    "The compass should be leveled using the bubble level.",
+    "The compass should be stored in its protective case after use.",
+    "The dip angle is measured before placing the compass on the rock.",
+    "The strike direction is read from the compass needle."
+  ], correctSet: [1,2,4] },
+{ type:'complex_matrix', tag:'TEKS', passage: passageMultimeter,
+  question: "Classify each statement into the correct step category of the procedure.",
+  columns: ["Preparation Step","Measurement Step"],
+  rows: [
+    "Reading the strike direction from the compass needle.",
+    "Tilting the clinometer arm to measure the dip angle.",
+    "Placing the compass flat against the rock surface.",
+    "Recording the dip angle after measuring it.",
+    "Leveling the compass using the bubble level."
+  ], correct: [1,1,0,1,0] },
+
+// ===== JENIS 5: ANALYTICAL EXPOSITION (13-15) =====
+{ type:'single', tag:'TEKS', passage: passageDigital,
+  question: "What is the writer's main argument?",
+  options: ["Vocational schools should stop teaching practical skills.","Only office workers need digital literacy.","Technical manuals are no longer necessary.","Vocational schools should strengthen digital literacy alongside practical training.","Digital literacy is less important than English skills."], answer: 3 },
+{ type:'complex_multi', tag:'TEKS', passage: passageDigital,
+  question: "Based on the text, choose ALL statements that are TRUE.",
+  statements: [
+    "According to the text, vocational schools should reduce practical training in favor of digital classes.",
+    "The text claims most vocational students already have strong digital skills before graduating.",
+    "Modern mining operations increasingly rely on computer-based systems.",
+    "Employers no longer require any form of written communication from graduates.",
+    "Digital literacy can help students access up-to-date technical references."
+  ], correctSet: [2,4] },
+{ type:'complex_matrix', tag:'TEKS', passage: passageDigital,
+  question: "Decide whether each statement is True or False according to the writer's argument.",
+  columns: ["True","False"],
+  rows: [
+    "Understanding basic software helps students adapt to modern mining operations.",
+    "Vocational schools should completely stop practical training.",
+    "Outdated manuals are always more reliable than digital references.",
+    "Employers value graduates who can use digital platforms.",
+    "Technical skills alone are enough for vocational students today."
+  ], correct: [0,1,1,0,1] },
+
+// ===== JENIS 6: TEKS FUNGSIONAL/VOKASIONAL (16-18) =====
+{ type:'single', tag:'TEKS', passage: jobAd,
+  question: "What qualification is required for the Junior Mine Surveyor position?",
+  options: ["An SMK graduate in Geology/Mining Engineering.","A university degree in Business.","At least five years of work experience.","Fluency in three foreign languages.","A valid driving license only."], answer: 0 },
+{ type:'complex_multi', tag:'TEKS', passage: jobAd,
+  question: "Based on the advertisement, choose ALL statements that are TRUE.",
+  statements: [
+    "Applicants must hold a university degree.",
+    "Applicants should be willing to work in shifts.",
+    "The company requires applicants to speak French fluently.",
+    "Applicants need to be able to read technical manuals in English.",
+    "The application deadline is October 15th, 2026."
+  ], correctSet: [1,3,4] },
+{ type:'complex_matrix', tag:'TEKS', passage: jobAd,
+  question: "Based on the advertisement, decide whether each statement is TRUE or FALSE.",
+  columns: ["True","False"],
+  rows: [
+    "Fresh graduates with no relevant background are welcome to apply regardless of major.",
+    "The position advertised is for a Junior Mine Surveyor.",
+    "The company is located outside Indonesia.",
+    "Applicants must have at least five years of experience.",
+    "Applicants are expected to work in shifts."
+  ], correct: [1,0,1,1,0] },
+
+// ===== JENIS 7: INFOGRAFIS (19-21) - poster, grafik, tabel =====
+{ type:'single', tag:'POSTER (K3)', passageHtml:true, passage: posterK3,
+  question: "According to the poster, where should someone go if an accident happens in the mining area?",
+  options: ["The tool storage room.","The site manager's office.","The first aid station.","The parking area.","The fuel storage area."], answer: 2 },
+{ type:'complex_multi', tag:'INFOGRAFIS', passageHtml:true, passage: infographicA,
+  question: "Based on the chart, choose ALL statements that are TRUE.",
+  statements: [
+    "Mine Drilling has fewer enthusiasts than Heavy Equipment.",
+    "The number of students interested in Geological Surveying is more than double those interested in Mine Safety.",
+    "Mineral Processing is the least popular program among the five.",
+    "The combined number of students interested in Heavy Equipment and Mineral Processing equals the number interested in Geological Surveying.",
+    "Geological Surveying is the most popular program among the students surveyed."
+  ], correctSet: [1,4] },
+{ type:'complex_matrix', tag:'INFOGRAFIS', passageHtml:true, passage: infographicB,
+  question: "Based on the table, decide whether each statement is TRUE or FALSE.",
+  columns: ["True","False"],
+  rows: [
+    "Geological Surveying has more practical hours than Mineral Processing.",
+    "Mine Drilling has more practical hours than Mineral Processing.",
+    "Heavy Equipment has the fewest practical hours among the four programs.",
+    "The difference between Geological Surveying and Mine Drilling is 2 hours.",
+    "The total practical hours of Heavy Equipment and Mine Drilling equals the practical hours of Geological Surveying."
+  ], correct: [0,1,0,0,1] },
+
+// ===== ERROR RECOGNITION (22-24) =====
+{ type:'single', tag:'PERHATIKAN KALIMAT', passageHtml:true,
+  passage: "Every morning, <u>(A) the surveyor checks the equipment</u> <u>(B) and then</u> <u>(C) he inspects the drilling site</u> <u>(D) before he give the report</u> <u>(E) to his supervisor</u>.",
+  question: "Which underlined part contains a grammatical error?",
+  options: ["(A) the surveyor checks the equipment","(B) and then","(C) he inspects the drilling site","(D) before he give the report","(E) to his supervisor"], answer: 3 },
+{ type:'single', tag:'PERHATIKAN KALIMAT', passageHtml:true,
+  passage: "<u>(A) Yesterday afternoon,</u> <u>(B) the workers was wearing safety helmets</u> <u>(C) while operating</u> <u>(D) the heavy machinery</u> <u>(E) at the mine site</u>.",
+  question: "Which underlined part contains a grammatical error?",
+  options: ["(A) Yesterday afternoon,","(B) the workers was wearing safety helmets","(C) while operating","(D) the heavy machinery","(E) at the mine site"], answer: 1 },
+{ type:'single', tag:'PERHATIKAN KALIMAT', passageHtml:true,
+  passage: "<u>(A) She has finished</u> <u>(B) her fieldwork report,</u> <u>(C) and now she is preparing</u> <u>(D) a presentation</u> <u>(E) to presented tomorrow</u>.",
+  question: "Which underlined part contains a grammatical error?",
+  options: ["(A) She has finished","(B) her fieldwork report,","(C) and now she is preparing","(D) a presentation","(E) to presented tomorrow"], answer: 4 },
+
+// ===== GRAMMAR (25-27) =====
+{ type:'single', tag:'TEKS',
+  question: "The drilling equipment ___ by a technician every month.",
+  options: ["services","is serviced","serviced","has service","servicing"], answer: 1 },
+{ type:'single', tag:'TEKS',
+  question: "If the generator ___ suddenly, please switch to the backup power system immediately.",
+  options: ["went out","go out","has gone out","goes out","will go out"], answer: 3 },
+{ type:'single', tag:'TEKS',
+  question: "The site supervisor said that the new excavator ___ the day before.",
+  options: ["had arrived","arrives","will arrive","arrived","arriving"], answer: 0 },
+
+// ===== VOCABULARY (28-30) =====
+{ type:'single', tag:'TEKS',
+  question: "The word \"precise\" has the closest meaning to...",
+  options: ["Careless","Slow","Accurate","Expensive","Heavy"], answer: 2 },
+{ type:'single', tag:'PERHATIKAN KATA', passageHtml:true,
+  passage: "The rock core samples must be handled carefully because they are extremely <u>fragile</u>.",
+  question: "The word closest in meaning to the underlined word is...",
+  options: ["Sturdy","Heavy","Cheap","Colorful","Breakable"], answer: 4 },
+{ type:'single', tag:'TEKS',
+  question: "The antonym of \"careless\" is...",
+  options: ["Careful","Sloppy","Reckless","Fast","Loud"], answer: 0 }
+];
+
+/* ================= STATE ================= */
+const TOTAL_TIME = 75 * 60; // seconds
+let timeLeft = TOTAL_TIME;
+let timerInterval = null;
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+let studentName = "";
+let studentClass = "";
+let finished = false;
+let examActive = false;
+let violationCount = 0;
+
+/* ================= ANTI-CHEAT: DETEKSI PINDAH TAB/APLIKASI ================= */
+/* Catatan: ini hanya MENDETEKSI, bukan mencegah, karena halaman web tidak
+   bisa mengunci HP ke satu aplikasi. Untuk itu perlu fitur di level OS
+   (Guided Access di iOS / Screen Pinning di Android), yang harus
+   diaktifkan manual oleh siswa/guru di tiap perangkat. */
+document.addEventListener('visibilitychange', function(){
+  if(!examActive) return;
+  if(document.hidden){
+    violationCount++;
+    updateViolationBadge();
+  } else {
+    showViolationWarning();
+  }
+});
+function updateViolationBadge(){
+  const badge = document.getElementById('violation-badge');
+  const countEl = document.getElementById('violation-count');
+  countEl.textContent = violationCount;
+  badge.style.display = violationCount > 0 ? 'inline-flex' : 'none';
+}
+function showViolationWarning(){
+  if(violationCount === 0) return;
+  const banner = document.getElementById('violation-banner');
+  banner.textContent = '⚠️ Kamu terdeteksi meninggalkan halaman ujian (percobaan ke-' + violationCount + '). Aktivitas ini tercatat dan dapat dilaporkan ke guru.';
+  banner.style.display = 'block';
+  setTimeout(()=>{ banner.style.display = 'none'; }, 6000);
+}
+/* Menghambat copy/cut/klik-kanan pada konten soal (bukan pada kolom nama/kelas) */
+['quiz-screen'].forEach(id=>{
+  document.getElementById(id).addEventListener('copy', e=>e.preventDefault());
+  document.getElementById(id).addEventListener('cut', e=>e.preventDefault());
+  document.getElementById(id).addEventListener('contextmenu', e=>e.preventDefault());
+});
+
+/* ================= START ================= */
+function startExam(){
+  const nameVal = document.getElementById('input-name').value.trim();
+  const classVal = document.getElementById('input-class').value.trim();
+  if(!nameVal || !classVal){
+    document.getElementById('start-error').style.display = 'block';
+    return;
+  }
+  studentName = nameVal;
+  studentClass = classVal;
+  document.getElementById('start-screen').classList.remove('active');
+  document.getElementById('quiz-screen').classList.add('active');
+  examActive = true;
+  buildNavigator();
+  renderQuestion();
+  startTimer();
+}
+
+/* ================= TIMER ================= */
+function startTimer(){
+  updateTimerDisplay();
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    updateTimerDisplay();
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      finishExam();
+    }
+  },1000);
+}
+function updateTimerDisplay(){
+  const m = Math.floor(timeLeft/60);
+  const s = timeLeft%60;
+  const el = document.getElementById('timer-display');
+  el.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  if(timeLeft <= 300){ el.classList.add('warning'); } else { el.classList.remove('warning'); }
+}
+
+/* ================= RENDER ================= */
+function renderQuestion(){
+  const q = questions[current];
+  document.getElementById('q-progress').textContent = 'Soal ' + (current+1) + '/' + questions.length;
+  document.getElementById('progress-fill').style.width = (((current+1)/questions.length)*100) + '%';
+
+  const passageEl = document.getElementById('passage-container');
+  if(q.passage){
+    const tagLabel = q.tag || 'TEKS';
+    const body = q.passageHtml ? q.passage : q.passage.replace(/\n/g,'<br>');
+    passageEl.innerHTML = '<div class="passage-box"><span class="tag">'+tagLabel+'</span><br>' + body + '</div>';
+  } else {
+    passageEl.innerHTML = '';
+  }
+
+  document.getElementById('question-text').textContent = (current+1) + '. ' + q.question;
+
+  const noteEl = document.getElementById('instruction-note');
+  const optWrap = document.getElementById('options-container');
+  optWrap.innerHTML = '';
+
+  if(q.type === 'complex_multi'){
+    noteEl.style.display = 'block';
+    noteEl.textContent = 'Pilih SEMUA pernyataan yang benar (jawaban bisa lebih dari satu).';
+    if(!Array.isArray(answers[current])) answers[current] = [];
+    q.statements.forEach((stmt,idx)=>{
+      const div = document.createElement('div');
+      const isSel = answers[current].includes(idx);
+      div.className = 'option' + (isSel ? ' selected' : '');
+      div.onclick = ()=>toggleMulti(idx);
+      div.innerHTML = '<span class="letter square">'+(isSel?'✓':'')+'</span><span>'+stmt+'</span>';
+      optWrap.appendChild(div);
+    });
+  } else if(q.type === 'complex_matrix'){
+    noteEl.style.display = 'block';
+    noteEl.textContent = 'Tentukan pilihan yang tepat untuk setiap pernyataan pada tabel.';
+    if(!Array.isArray(answers[current])) answers[current] = new Array(q.rows.length).fill(null);
+    let html = '<div class="matrix-wrap"><table class="matrix-table"><tr><th style="text-align:left;">Pernyataan</th>';
+    q.columns.forEach(c=>{ html += '<th>'+c+'</th>'; });
+    html += '</tr>';
+    q.rows.forEach((row,rIdx)=>{
+      html += '<tr><td class="stmt">'+row+'</td>';
+      q.columns.forEach((c,cIdx)=>{
+        const sel = answers[current][rIdx] === cIdx;
+        html += '<td><span class="matrix-cell'+(sel?' selected':'')+'" onclick="selectMatrix('+rIdx+','+cIdx+')">'+(sel?'✓':'')+'</span></td>';
+      });
+      html += '</tr>';
+    });
+    html += '</table></div>';
+    optWrap.innerHTML = html;
+  } else {
+    noteEl.style.display = 'none';
+    const letters = ['A','B','C','D','E'];
+    q.options.forEach((opt,idx)=>{
+      const div = document.createElement('div');
+      div.className = 'option' + (answers[current]===idx ? ' selected' : '');
+      div.onclick = ()=>selectOption(idx);
+      div.innerHTML = '<span class="letter">'+letters[idx]+'</span><span>'+opt+'</span>';
+      optWrap.appendChild(div);
+    });
+  }
+
+  document.getElementById('prev-btn').style.visibility = current===0 ? 'hidden' : 'visible';
+  document.getElementById('next-btn').style.display = current===questions.length-1 ? 'none' : 'block';
+  document.getElementById('submit-btn').style.display = current===questions.length-1 ? 'block' : 'none';
+
+  updateNavigator();
+}
+
+function selectOption(idx){
+  answers[current] = idx;
+  renderQuestion();
+}
+function toggleMulti(idx){
+  const arr = answers[current];
+  const pos = arr.indexOf(idx);
+  if(pos>-1){ arr.splice(pos,1); } else { arr.push(idx); }
+  renderQuestion();
+}
+function selectMatrix(rowIdx,colIdx){
+  answers[current][rowIdx] = colIdx;
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(current < questions.length-1){ current++; renderQuestion(); scrollTop(); }
+}
+function prevQuestion(){
+  if(current > 0){ current--; renderQuestion(); scrollTop(); }
+}
+function scrollTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ================= NAVIGATOR ================= */
+function buildNavigator(){
+  const nav = document.getElementById('navigator');
+  nav.innerHTML = '';
+  questions.forEach((q,idx)=>{
+    const cell = document.createElement('div');
+    cell.className = 'nav-cell';
+    cell.textContent = idx+1;
+    cell.id = 'nav-cell-'+idx;
+    cell.onclick = ()=>{ current = idx; renderQuestion(); scrollTop(); };
+    nav.appendChild(cell);
+  });
+}
+function isAnswered(idx){
+  const a = answers[idx];
+  const q = questions[idx];
+  if(q.type === 'complex_multi') return Array.isArray(a) && a.length>0;
+  if(q.type === 'complex_matrix') return Array.isArray(a) && a.every(v=>v!==null);
+  return a !== null && a !== undefined;
+}
+function updateNavigator(){
+  questions.forEach((q,idx)=>{
+    const cell = document.getElementById('nav-cell-'+idx);
+    cell.classList.remove('answered','current');
+    if(isAnswered(idx)) cell.classList.add('answered');
+    if(idx === current) cell.classList.add('current');
+  });
+}
+
+/* ================= SUBMIT & SCORING ================= */
+function confirmSubmit(){
+  let unanswered = 0;
+  questions.forEach((q,idx)=>{ if(!isAnswered(idx)) unanswered++; });
+  let msg = 'Apakah kamu yakin ingin mengumpulkan jawaban?';
+  if(unanswered > 0){
+    msg = 'Masih ada ' + unanswered + ' soal yang belum dijawab. ' + msg;
+  }
+  if(confirm(msg)){
+    finishExam();
+  }
+}
+
+function isCorrect(idx){
+  const q = questions[idx];
+  const a = answers[idx];
+  if(q.type === 'single'){
+    return a === q.answer;
+  }
+  if(q.type === 'complex_multi'){
+    if(!Array.isArray(a)) return false;
+    const sortedA = [...a].sort();
+    const sortedC = [...q.correctSet].sort();
+    return sortedA.length === sortedC.length && sortedA.every((v,i)=>v===sortedC[i]);
+  }
+  if(q.type === 'complex_matrix'){
+    if(!Array.isArray(a)) return false;
+    return q.correct.every((v,i)=>a[i]===v);
+  }
+  return false;
+}
+
+function finishExam(){
+  if(finished) return;
+  finished = true;
+  examActive = false;
+  clearInterval(timerInterval);
+
+  let correct = 0;
+  questions.forEach((q,idx)=>{ if(isCorrect(idx)) correct++; });
+  const score = Math.round((correct/questions.length)*100);
+
+  document.getElementById('result-name').textContent = studentName;
+  document.getElementById('result-class').textContent = studentClass;
+  document.getElementById('result-code').textContent = score;
+
+  const ribbon = document.getElementById('result-ribbon');
+  const ribbonCode = document.getElementById('ribbon-code');
+  if(violationCount > 0){
+    ribbon.className = 'result-ribbon flagged';
+    ribbonCode.textContent = violationCount;
+  } else {
+    ribbon.className = 'result-ribbon clean';
+    ribbonCode.textContent = '';
+  }
+
+  document.getElementById('quiz-screen').classList.remove('active');
+  document.getElementById('result-screen').classList.add('active');
+  scrollTop();
+}
+
+</script>
+</body>
+</html>
